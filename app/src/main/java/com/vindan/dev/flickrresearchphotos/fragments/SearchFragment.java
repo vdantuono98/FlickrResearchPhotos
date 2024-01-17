@@ -1,10 +1,12 @@
 package com.vindan.dev.flickrresearchphotos.fragments;
 
+import android.content.Context;
 import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -14,10 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.vindan.dev.flickrresearchphotos.R;
@@ -25,6 +29,9 @@ import com.vindan.dev.flickrresearchphotos.adapters.PhotoAdapter;
 import com.vindan.dev.flickrresearchphotos.api.RetrofitFlickr;
 import com.vindan.dev.flickrresearchphotos.models.apiPhotosModel.DataPhotosAPI;
 import com.vindan.dev.flickrresearchphotos.models.apiPhotosModel.Photo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SearchFragment extends Fragment implements RetrofitFlickr.OnPhotosReceived, PhotoAdapter.OnItemPhotoClick {
 
@@ -42,7 +49,13 @@ public class SearchFragment extends Fragment implements RetrofitFlickr.OnPhotosR
     private RecyclerView photosRW;
     private TextView noImageAvailable;
     private LottieAnimationView loader;
+    private NestedScrollView nestedScrollViewImages;
+    private String textToSearch;
 
+    private PhotoAdapter photoAdapter;
+    private int page = 1;
+    private int perPage = 30;
+    private List<Photo> list = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,6 +74,7 @@ public class SearchFragment extends Fragment implements RetrofitFlickr.OnPhotosR
         layout_edit_text = view.findViewById(R.id.layout_edit_text);
         photosRW = view.findViewById(R.id.photosRW);
         loader = view.findViewById(R.id.loader);
+        nestedScrollViewImages = view.findViewById(R.id.nestedScrollViewImages);
 
         retrofitFlickr = new RetrofitFlickr();
         retrofitFlickr.setOnPhotosReceivedListener(this);
@@ -80,39 +94,44 @@ public class SearchFragment extends Fragment implements RetrofitFlickr.OnPhotosR
 
         doneButton.setOnClickListener(view13 -> {
 
-            String textToSearch = searchText.getText().toString();
-
-            if(textToSearch!=null){
+            textToSearch = searchText.getText().toString();
                 if(textToSearch.isEmpty()){
-
                     layout_edit_text.setVisibility(View.GONE);
 
                 }else {
                     tagTV.setText(textToSearch);
-                    retrofitFlickr.getPhotos(textToSearch, "json");
+                    retrofitFlickr.getPhotos(textToSearch, "json", perPage, page);
                     loader.setVisibility(View.VISIBLE);
+
+                    hideKeyboard(view13);
+
                     searchText.setText("");
                     layout_edit_text.setVisibility(View.GONE);
                 }
-            }
+
         });
+
+
+
+
 
 
     }
 
     @Override
     public void onError(Throwable error) {
-      String errorString =  error.getMessage();
+        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onPhotosReceived(DataPhotosAPI dataPhotosAPI) {
+
         if(getContext()!=null) {
             noImageAvailable.setVisibility(View.GONE);
             loader.setVisibility(View.GONE);
             photosRW.setHasFixedSize(true);
             photosRW.setLayoutManager(new LinearLayoutManager(getContext()));
-            PhotoAdapter photoAdapter = new PhotoAdapter(dataPhotosAPI.getPhotos().getPhoto(), getContext());
+            photoAdapter = new PhotoAdapter(dataPhotosAPI.getPhotos().getPhoto(), getContext());
             photoAdapter.setOnItemPhotoClick(this);
             photosRW.setAdapter(photoAdapter);
 
@@ -121,6 +140,13 @@ public class SearchFragment extends Fragment implements RetrofitFlickr.OnPhotosR
 
     @Override
     public void onItemPhotoClick(Photo photo) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("photo", photo);
+        navController.navigate(R.id.action_searchFragment_to_detailFragment, bundle);
+    }
 
+    private void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

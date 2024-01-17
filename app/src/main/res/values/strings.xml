@@ -7,4 +7,9 @@
     <string name="research_copy">Clicca sulla lente per effettuare una ricerca</string>
     <string name="search_copy_hint">Inserisci un tema per la foto da cercare</string>
     <string name="start_research">Inizia una ricerca!</string>
+    <string name="username">Username</string>
+    <string name="complete_name">Nome Completo</string>
+    <string name="share_profile">Condividi Profilo</string>
+    <string name="time_zone">Time Zone</string>
+    <string name="no_image_available">Nessuna immagine disponibile</string>
 </resources>

@@ -4,7 +4,9 @@ package com.vindan.dev.flickrresearchphotos.models.apiPhotosModel;
 
 import com.google.gson.annotations.SerializedName;
 
-public class DataPhotosAPI {
+import java.io.Serializable;
+
+public class DataPhotosAPI implements Serializable {
 
     @SerializedName("photos")
     private Photos photos;

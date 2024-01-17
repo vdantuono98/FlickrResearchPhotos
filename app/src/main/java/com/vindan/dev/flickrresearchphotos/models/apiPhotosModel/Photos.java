@@ -1,9 +1,10 @@
 package com.vindan.dev.flickrresearchphotos.models.apiPhotosModel;
 
+import java.io.Serializable;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-public class Photos {
+public class Photos implements Serializable {
 
     @SerializedName("page")
     private Integer page;
