@@ -118,7 +118,6 @@ public class SearchFragment extends Fragment implements RetrofitFlickr.OnPhotosR
         layout_edit_text.setVisibility(View.GONE);
 
         if(currentPage <= TOTAL_PAGES){
-            list.add(null);
         }else{
             isLastPage = true;
         }
@@ -130,7 +129,6 @@ public class SearchFragment extends Fragment implements RetrofitFlickr.OnPhotosR
         isLoading = false;
 
         if(currentPage != TOTAL_PAGES){
-            list.add(null);
         }else {
             isLastPage = true;
         }
