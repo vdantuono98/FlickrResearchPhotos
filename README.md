@@ -17,20 +17,21 @@ scattato la foto.
 ## Ringraziamenti
 
 per l'utilizzo del tool navigator:
-'androidx.navigation:navigation-fragment:2.7.6'
-'androidx.navigation:navigation-ui:2.7.6'
+"androidx.navigation:navigation-fragment:2.7.6"
+
+"androidx.navigation:navigation-ui:2.7.6"
 
 
 per l'utilizzo di gif in formato json (loader) :
-'com.airbnb.android:lottie:6.3.0'
+"com.airbnb.android:lottie:6.3.0"
 
 per ottenere i dati da chiamate a webservice (API) di Flickr: 
-'com.squareup.retrofit2:retrofit:2.7.2'
-'com.squareup.retrofit2:converter-gson:2.7.2'
-'com.squareup.okhttp3:okhttp:4.9.2'
+"com.squareup.retrofit2:retrofit:2.7.2"
+"com.squareup.retrofit2:converter-gson:2.7.2"
+"com.squareup.okhttp3:okhttp:4.9.2"
 
 per caricamento di foto da url:
-'com.github.bumptech.glide:glide:4.16.0'
+"com.github.bumptech.glide:glide:4.16.0"
 
 
 
