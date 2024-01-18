@@ -23,6 +23,9 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>{
     private Context context;
     private OnItemPhotoClick onItemPhotoClickListener;
 
+    final int VIEW_TYPE_LOADING = 0;
+    final int VIEW_TYPE_ITEM = 1;
+
     public PhotoAdapter(List<Photo> list, Context context) {
         this.list = list;
         this.context = context;
@@ -33,11 +36,21 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>{
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View view = layoutInflater.inflate(R.layout.row_photo_adapter, parent, false);
 
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        if (viewType == VIEW_TYPE_ITEM) {
+            View view = layoutInflater.inflate(R.layout.row_photo_adapter, parent, false);
+            return new ViewHolder(view);
+        } else if (viewType == VIEW_TYPE_LOADING) {
+            View view = layoutInflater.inflate(R.layout.loading_row, parent, false);
+            return new LoadingHolder(view);
+        } else {
+              throw new IllegalArgumentException("Tipo di vista sconosciuto: " + viewType);
+        }
+    }
 
+    @Override
+    public int getItemViewType(int position) {
+        return list.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
     }
 
     @Override
@@ -45,23 +58,24 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>{
         int actualPos = position;
         Photo currentItem = list.get(actualPos);
 
-        holder.title.setText(currentItem.getTitle());
+        if(currentItem!=null) {
+            holder.title.setText(currentItem.getTitle());
 
-        String url = "https://live.staticflickr.com/"+ currentItem.getServer() +"/"+currentItem.getId()+"_"
-                +currentItem.getSecret()+"_"+"w.jpg";
+            String url = "https://live.staticflickr.com/" + currentItem.getServer() + "/" + currentItem.getId() + "_"
+                    + currentItem.getSecret() + "_" + "w.jpg";
 
-        Glide.with(context)
-                .load(url)
-                .apply(new RequestOptions()
-                        .placeholder(R.drawable.gray_placeholder)
-                        .error(R.drawable.gray_placeholder)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .centerCrop()
-                )
-                .into(holder.imageView);
+            Glide.with(context)
+                    .load(url)
+                    .apply(new RequestOptions()
+                            .placeholder(R.drawable.gray_placeholder)
+                            .error(R.drawable.gray_placeholder)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .centerCrop()
+                    )
+                    .into(holder.imageView);
 
-        holder.container.setOnClickListener(view -> onItemPhotoClickListener.onItemPhotoClick(currentItem));
-
+            holder.container.setOnClickListener(view -> onItemPhotoClickListener.onItemPhotoClick(currentItem));
+        }
     }
 
     @Override
@@ -85,6 +99,14 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>{
         }
     }
 
+    private class LoadingHolder extends ViewHolder {
+        public LoadingHolder(View view) {
+            super(view);
+        }
+    }
+
+
+
     public interface OnItemPhotoClick{
         void onItemPhotoClick(Photo photo);
     }
@@ -92,4 +114,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>{
     public void setOnItemPhotoClick(OnItemPhotoClick onItemPhotoClickListener){
          this.onItemPhotoClickListener = onItemPhotoClickListener;
     }
+
+
 }

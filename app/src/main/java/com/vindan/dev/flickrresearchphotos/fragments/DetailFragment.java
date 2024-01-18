@@ -38,6 +38,8 @@ public class DetailFragment extends Fragment implements RetrofitFlickr.OnGetUser
     private ImageView imageView;
 
     private RetrofitFlickr retrofitFlickr;
+
+    private String lastSearch;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -60,10 +62,12 @@ public class DetailFragment extends Fragment implements RetrofitFlickr.OnGetUser
 
 
         Bundle bundle = getArguments();
+
         if(bundle!=null) {
             photo = (Photo) bundle.getSerializable("photo");
             retrofitFlickr.getUserInfo(photo.getOwner(), "json");
         }
+
 
         return view;
     }
